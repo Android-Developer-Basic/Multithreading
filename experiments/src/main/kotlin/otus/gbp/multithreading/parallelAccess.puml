@@ -1,0 +1,30 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+title Parallel increment
+
+actor User
+control "Thread-1" as t1
+entity Counter
+control "Thread-2" as t2
+
+User -> Counter: get
+User <-- Counter: 0
+
+t1 -> Counter: get
+t1 <-- Counter: 0
+t1 -> t1: increment
+
+t2 -> Counter: get
+t2 <-- Counter: 0
+t2 -> t2: increment
+
+t1 -> Counter: put 1
+t2 -> Counter: put 1
+
+User -> Counter: get
+User <-- Counter: 1
+note right
+    The counter is 1 instead of 2
+end note
+@enduml
