@@ -3,6 +3,7 @@ package otus.gbp.multithreading
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.yield
 import kotlin.system.measureTimeMillis
 
 fun main() = runBlocking {
@@ -26,6 +27,7 @@ suspend fun perform(takesTime: Int = 1000, block: () -> String) {
     log { "Starting task: ${block()}" }
     repeat(takesTime / 100) {
         Thread.sleep(100)
+        yield()
     }
     log { "Finished task: ${block()}" }
 }
