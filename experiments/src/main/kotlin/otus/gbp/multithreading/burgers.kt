@@ -1,15 +1,22 @@
 package otus.gbp.multithreading
 
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlin.system.measureTimeMillis
 
 fun main() = runBlocking {
     log { "Делаем бургер..." }
     val time = measureTimeMillis {
-        kneadDough()
-        grindMeat()
-        bakeBuns()
-        roastPatty()
+        val bun = launch {
+            kneadDough()
+            bakeBuns()
+        }
+        val patty = launch {
+            grindMeat()
+            roastPatty()
+        }
+        joinAll(bun, patty)
         assemble()
     }
     log { "Готово! Время: $time" }
