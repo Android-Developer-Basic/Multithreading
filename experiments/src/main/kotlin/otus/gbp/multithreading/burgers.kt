@@ -1,19 +1,19 @@
 package otus.gbp.multithreading
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.yield
 import kotlin.system.measureTimeMillis
 
 fun main() = runBlocking {
     log { "Делаем бургер..." }
     val time = measureTimeMillis {
-        val bun = launch {
+        val bun = launch(Dispatchers.Default) {
             kneadDough()
             bakeBuns()
         }
-        val patty = launch {
+        val patty = launch(Dispatchers.Default) {
             grindMeat()
             roastPatty()
         }
@@ -27,7 +27,6 @@ suspend fun perform(takesTime: Int = 1000, block: () -> String) {
     log { "Starting task: ${block()}" }
     repeat(takesTime / 100) {
         Thread.sleep(100)
-        yield()
     }
     log { "Finished task: ${block()}" }
 }
