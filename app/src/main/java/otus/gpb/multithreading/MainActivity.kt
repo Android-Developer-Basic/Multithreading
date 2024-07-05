@@ -46,8 +46,10 @@ class MainActivity : AppCompatActivity() {
         th?.post {
             val currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
             log { "Current time: $currentTime" }
-            log { "Logging current time..." }
-            binding.message.text = getString(R.string.updated_at, currentTime)
+            Handler(Looper.getMainLooper()).post {
+                log { "Logging current time..." }
+                binding.message.text = getString(R.string.updated_at, currentTime)
+            }
         }
     }
 
