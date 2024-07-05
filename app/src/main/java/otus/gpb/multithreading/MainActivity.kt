@@ -13,11 +13,12 @@ import kotlin.time.Clock
 
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
     private var th: BgThread? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val binding = ActivityMainBinding.inflate(layoutInflater)
+        binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         with(binding) {
@@ -43,7 +44,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun sendMessage() {
         th?.post {
-            log { "Current time: ${Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time}" }
+            val currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
+            log { "Current time: $currentTime" }
+            log { "Logging current time..." }
+            binding.message.text = getString(R.string.updated_at, currentTime)
         }
     }
 
