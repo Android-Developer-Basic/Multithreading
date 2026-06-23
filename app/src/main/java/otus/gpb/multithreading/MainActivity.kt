@@ -43,9 +43,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendMessage() {
+        log { "Sending message..." }
         th?.post {
             val currentTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).time
             log { "Current time: $currentTime" }
+            Thread.sleep(2000)
             Handler(Looper.getMainLooper()).post {
                 log { "Logging current time..." }
                 binding.message.text = getString(R.string.updated_at, currentTime)
@@ -53,7 +55,23 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private class BgThread : Thread() {
+    override fun onDestroy() {
+        super.onDestroy()
+        log { "onDestroy" }
+    }
+
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun log(block: () -> String) {
+        val tag = "MainActivity"
+        val message = "Thread: ${Thread.currentThread().name}, instance: ${System.identityHashCode(this).toHexString()}: " + block()
+        if (isDestroyed) {
+            Log.e(tag, "LEAKED ACTIVITY: $message")
+        } else {
+            Log.i(tag, message)
+        }
+    }
+
+    private inner class BgThread : Thread() {
         private lateinit var handler: Handler
 
         init {
@@ -79,9 +97,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-}
-
-private fun log(block: () -> String) {
-    Log.i("MainActivity", "Thread: ${Thread.currentThread().name}: " + block())
 }
 
